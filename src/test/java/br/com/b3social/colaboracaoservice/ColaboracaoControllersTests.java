@@ -58,7 +58,7 @@ public class ColaboracaoControllersTests {
     @Autowired
     private MockMvc mockMvc;
 
-    public static final String BASE_URI = "/inscricao";
+    public static final String BASE_URI = "/colaboracao";
     public static final String DF = "default";
     public static final String RANDOM_UIID = "dc7a2924-736b-11ee-b962-0242ac120002";
 
