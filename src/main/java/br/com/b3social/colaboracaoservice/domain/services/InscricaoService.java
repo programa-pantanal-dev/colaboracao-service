@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import br.com.b3social.colaboracaoservice.api.consumers.AcaoSocialConsumer;
 import br.com.b3social.colaboracaoservice.api.dtos.AcaoSocialDTO;
+import br.com.b3social.colaboracaoservice.api.dtos.EmailDto;
+import br.com.b3social.colaboracaoservice.api.producers.EmailServiceProducer;
 import br.com.b3social.colaboracaoservice.domain.models.Colaboracao;
 import br.com.b3social.colaboracaoservice.domain.models.enums.Status;
 import br.com.b3social.colaboracaoservice.domain.repositories.ColaboracaoRepository;
@@ -20,19 +22,27 @@ public class InscricaoService {
     private ColaboracaoRepository repository;
 
     @Autowired
+    EmailServiceProducer emailProducer;
+
+    @Autowired
     AcaoSocialConsumer acaoSocialConsumer;
 
-    public Colaboracao criarInscricao(Colaboracao inscricao, String usuarioId, String usuarioNome){
+    public Colaboracao criarInscricao(Colaboracao inscricao, String usuarioId, String usuarioNome, String usuarioEmail){
         String acaoSocialId = inscricao.getAcaoSocialId();
         AcaoSocialDTO acaoSocialDTO = acaoSocialConsumer.buscarAcaoSocialPorId(acaoSocialId);
         boolean naoCadastrado = validarCadastro(acaoSocialId, usuarioId);
 
         if(acaoSocialDTO != null && naoCadastrado){
+            inscricao.setColaboradorEmail(usuarioEmail);
             inscricao.setColaboradorId(usuarioId);
             inscricao.setColaboradorNome(usuarioNome);
             inscricao.setCoordenadorId(acaoSocialDTO.getCoordenadorId());
             inscricao.setStatus(Status.INSCRICAO_PENDENTE);
+            
             if(acaoSocialDTO.getNivel() == 1) inscricao.setStatus(Status.INSCRICAO_DEFERIDA);
+            
+            enviarEmailCadastro(usuarioEmail, acaoSocialDTO.getTitulo());
+            
             return salvarInscricao(inscricao);
         }else if(!naoCadastrado){
             throw new EntityExistsException("Colaborador já inscrito");
@@ -97,5 +107,13 @@ public class InscricaoService {
 
     public Colaboracao salvarInscricao(Colaboracao inscricao){
         return this.repository.save(inscricao);
+    }
+
+    void enviarEmailCadastro(String usuarioEmail, String acaoSocialNome){
+        EmailDto emailDto = new EmailDto();
+        emailDto.setEmailPara(usuarioEmail);
+        emailDto.setAssunto("Inscrito em "+acaoSocialNome);
+        emailDto.setTexto("Obrigado por se inscrever! Aguarde nossa confirmação.");
+        this.emailProducer.publishMessageEmailServiceAcaoSocial(emailDto);
     }
 }

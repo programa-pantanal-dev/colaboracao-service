@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import br.com.b3social.colaboracaoservice.api.consumers.AcaoSocialConsumer;
 import br.com.b3social.colaboracaoservice.api.dtos.AcaoSocialDTO;
+import br.com.b3social.colaboracaoservice.api.producers.EmailServiceProducer;
 import br.com.b3social.colaboracaoservice.domain.models.Colaboracao;
 import br.com.b3social.colaboracaoservice.domain.models.enums.Status;
 import br.com.b3social.colaboracaoservice.domain.repositories.ColaboracaoRepository;
@@ -31,6 +32,12 @@ public class ColaboracaoServicesTests {
     @Mock
     AcaoSocialConsumer mockConsumer;
 
+    @Mock
+    EmailServiceProducer mockProducer;
+
+    @Mock
+    AcaoSocialDTO mockDTO;
+
     @InjectMocks
     InscricaoService mockService;
     
@@ -38,12 +45,14 @@ public class ColaboracaoServicesTests {
 
     @Test 
     void deveCriarUmaInscricaoComSucesso(){
-        when(this.mockConsumer.buscarAcaoSocialPorId(any())).thenReturn(new AcaoSocialDTO());
-        
+        AcaoSocialDTO acaoSocialDTO = new AcaoSocialDTO();
+        acaoSocialDTO.setNivel(1);
+        when(this.mockConsumer.buscarAcaoSocialPorId(any())).thenReturn(acaoSocialDTO);
+
         when(mockRepository.save(any(Colaboracao.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0, Colaboracao.class));
 
-        Colaboracao inscricaoCriada = mockService.criarInscricao(new Colaboracao(), DF, DF);
+        Colaboracao inscricaoCriada = mockService.criarInscricao(new Colaboracao(), DF, DF, DF);
 
         assertNotNull(inscricaoCriada);
     }
@@ -55,7 +64,7 @@ public class ColaboracaoServicesTests {
         when(mockRepository.save(any(Colaboracao.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0, Colaboracao.class));
 
-        assertThrows(EntityNotFoundException.class, () -> this.mockService.criarInscricao(new Colaboracao(), DF, DF));
+        assertThrows(EntityNotFoundException.class, () -> this.mockService.criarInscricao(new Colaboracao(), DF, DF, DF));
     }
 
     @Test

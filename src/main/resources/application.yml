@@ -11,8 +11,16 @@ spring:
         jwt:
           issuer-uri: http://localhost:8080/realms/b3social
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+  rabbitmq:
+    addresses: amqps://ylmnlgom:FPQfnKCxKeMWS_LYGAZBDVs8XqFg8fUD@shrimp.rmq.cloudamqp.com/ylmnlgom
+
 server:
   port: 8082
 
 acaosocial:
   baseurl: http://127.0.0.1:8081/acaosocial
+
+broker:
+  queue:
+    email:
+      name: default.email

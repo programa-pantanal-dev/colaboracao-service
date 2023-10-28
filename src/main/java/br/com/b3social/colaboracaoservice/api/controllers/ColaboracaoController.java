@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.b3social.colaboracaoservice.api.dtos.AtualizarColaboracaoDTO;
 import br.com.b3social.colaboracaoservice.api.dtos.CriarColaboracaoDTO;
+import br.com.b3social.colaboracaoservice.api.dtos.EmailDto;
 import br.com.b3social.colaboracaoservice.api.dtos.ColaboracaoMapper;
 import br.com.b3social.colaboracaoservice.api.dtos.RetornarColaboracaoDTO;
+import br.com.b3social.colaboracaoservice.api.producers.EmailServiceProducer;
 import br.com.b3social.colaboracaoservice.domain.models.Colaboracao;
 import br.com.b3social.colaboracaoservice.domain.models.enums.Status;
 import br.com.b3social.colaboracaoservice.domain.services.InscricaoService;
@@ -35,6 +37,9 @@ public class ColaboracaoController {
     @Autowired
     private InscricaoService inscricaoService;
     
+    @Autowired
+    EmailServiceProducer prod;
+
     @Autowired
     private ColaboracaoMapper mapper;
 
@@ -61,7 +66,7 @@ public class ColaboracaoController {
         Colaboracao inscricao = mapper.DtoToInscricao(criarInscricaoDTO);
         
         RetornarColaboracaoDTO retornarInscricaoDTO = mapper.InscricaoToDto(
-            this.inscricaoService.criarInscricao(inscricao, principal.getSubject(), principal.getClaimAsString("name"))
+            this.inscricaoService.criarInscricao(inscricao, principal.getSubject(), principal.getClaimAsString("name"), principal.getClaim("email"))
         );
 
         return new ResponseEntity<>(retornarInscricaoDTO, HttpStatus.CREATED);
@@ -203,7 +208,16 @@ public class ColaboracaoController {
         Colaboracao inscricao = this.inscricaoService.atualizarStatusInscricao(id, atualizarInscricaoDTO.getStatus());
 
         RetornarColaboracaoDTO inscricaoDTO = mapper.InscricaoToDto(inscricao);
-
+        
         return new ResponseEntity<>(inscricaoDTO, HttpStatus.OK);
     }
+
+    @GetMapping("/test")
+    public void enviarEmail(){
+        EmailDto email = new EmailDto();
+        email.setEmailPara("fontes.ovelar@gmail.com");
+        email.setAssunto("Test");
+        email.setTexto("Teste de envio de email");
+        this.prod.publishMessageEmailServiceAcaoSocial(email);
+    }  
 }

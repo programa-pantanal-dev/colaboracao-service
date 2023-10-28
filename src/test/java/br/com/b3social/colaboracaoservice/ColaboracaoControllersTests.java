@@ -72,7 +72,7 @@ public class ColaboracaoControllersTests {
 
         when(mockMapper.DtoToInscricao(any(CriarColaboracaoDTO.class))).thenReturn(inscricao);
 
-        when(mockService.criarInscricao(any(Colaboracao.class), anyString(), anyString())).thenReturn(inscricao);
+        when(mockService.criarInscricao(any(Colaboracao.class), anyString(), anyString(), anyString())).thenReturn(inscricao);
 
         when(mockMapper.InscricaoToDto(any(Colaboracao.class))).thenReturn(inscricaoDTO2);
 
@@ -96,7 +96,7 @@ public class ColaboracaoControllersTests {
 
         when(mockMapper.DtoToInscricao(any(CriarColaboracaoDTO.class))).thenReturn(inscricao);
 
-        when(mockService.criarInscricao(any(Colaboracao.class), anyString(), anyString())).thenReturn(inscricao);
+        when(mockService.criarInscricao(any(Colaboracao.class), anyString(), anyString(), anyString())).thenReturn(inscricao);
 
         when(mockMapper.InscricaoToDto(any(Colaboracao.class))).thenReturn(inscricaoDTO2);
 

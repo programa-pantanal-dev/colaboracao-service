@@ -29,5 +29,7 @@ public class Colaboracao {
 
     private String colaboradorNome;
 
+    private String colaboradorEmail;
+
     private String coordenadorId;
 }
