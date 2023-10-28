@@ -69,7 +69,7 @@ public class ColaboracaoController {
 
     @GetMapping("acaosocial/{id}")
     @Operation(
-        summary = "Retorna todas as inscrições de uma ação social",
+        summary = "Retorna todas as inscrições de uma ação social do coordenador logado",
         method = "GET"
     )
     @ApiResponse(
@@ -89,6 +89,26 @@ public class ColaboracaoController {
         );
 
         return new ResponseEntity<>(inscrisoesDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("numero-colaboradores/{id}")
+       @Operation(
+        summary = "Retorna a quantidade de inscrições em uma ação social",
+        method = "GET"
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "Sucesso ao buscar colaborações"
+    )
+    @ApiResponse(
+        responseCode = "401",
+        description = "Não autorizado",
+        content = @Content()
+    )
+    public ResponseEntity<Integer> buscarNumeroDeInscricoesPorAcaoSocial(@PathVariable String id){
+        int inscricoes = this.inscricaoService.buscarNumeroDeInscricaoPorId(id);
+
+        return new ResponseEntity<>(inscricoes, HttpStatus.OK);
     }
 
     @GetMapping("colaborador/{id}")

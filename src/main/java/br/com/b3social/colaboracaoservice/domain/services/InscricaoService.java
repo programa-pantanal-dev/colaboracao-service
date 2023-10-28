@@ -37,6 +37,16 @@ public class InscricaoService {
         throw new EntityNotFoundException("Ação social indisponível");
     }
 
+    public Integer buscarNumeroDeInscricaoPorId(String inscricaoId){
+        Optional<Integer> inscricaoOptional = this.repository.countByAcaoSocialId(inscricaoId);
+
+        if(inscricaoOptional.isPresent()){
+            return inscricaoOptional.get();
+        }
+
+        return 0;
+    }
+
     public Colaboracao buscarInscricaoPorId(String inscricaoId){
         Optional<Colaboracao> inscricaoOptional = this.repository.findById(inscricaoId);
 

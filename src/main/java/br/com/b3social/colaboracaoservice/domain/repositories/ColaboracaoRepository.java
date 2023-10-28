@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ColaboracaoRepository extends JpaRepository<Colaboracao, String>{
+    Optional<Integer> countByAcaoSocialId(String acaoSocialId);
     List<Colaboracao> findByAcaoSocialIdAndCoordenadorId(String acaoSocialId, String coordenadorId);
     List<Colaboracao> findByColaboradorId(String colabodadorId);
     List<Colaboracao> findByCoordenadorId(String coordenadorId);
