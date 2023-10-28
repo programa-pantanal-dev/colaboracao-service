@@ -16,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 
 @RestControllerAdvice
@@ -69,6 +70,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Object> handlerHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException exception) {
         String errorMessage = "Endereço URL não suportado";
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<Object> handlerEntityExistsException(EntityExistsException exception) {
+        String errorMessage = exception.getMessage();
+            if (errorMessage == null || errorMessage.isEmpty()) {
+                errorMessage = "Entidade já existe";
+            }
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 }

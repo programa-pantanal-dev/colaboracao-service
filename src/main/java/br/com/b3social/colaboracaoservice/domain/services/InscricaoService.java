@@ -11,6 +11,7 @@ import br.com.b3social.colaboracaoservice.api.dtos.AcaoSocialDTO;
 import br.com.b3social.colaboracaoservice.domain.models.Colaboracao;
 import br.com.b3social.colaboracaoservice.domain.models.enums.Status;
 import br.com.b3social.colaboracaoservice.domain.repositories.ColaboracaoRepository;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -24,17 +25,28 @@ public class InscricaoService {
     public Colaboracao criarInscricao(Colaboracao inscricao, String usuarioId, String usuarioNome){
         String acaoSocialId = inscricao.getAcaoSocialId();
         AcaoSocialDTO acaoSocialDTO = acaoSocialConsumer.buscarAcaoSocialPorId(acaoSocialId);
-        
-        if(acaoSocialDTO != null){
+        boolean naoCadastrado = validarCadastro(acaoSocialId, usuarioId);
+
+        if(acaoSocialDTO != null && naoCadastrado){
             inscricao.setColaboradorId(usuarioId);
             inscricao.setColaboradorNome(usuarioNome);
-            inscricao.setStatus(Status.INSCRICAO_PENDENTE);
             inscricao.setCoordenadorId(acaoSocialDTO.getCoordenadorId());
-
+            inscricao.setStatus(Status.INSCRICAO_PENDENTE);
+            if(acaoSocialDTO.getNivel() == 1) inscricao.setStatus(Status.INSCRICAO_DEFERIDA);
             return salvarInscricao(inscricao);
+        }else if(!naoCadastrado){
+            throw new EntityExistsException("Colaborador já inscrito");
         }
 
         throw new EntityNotFoundException("Ação social indisponível");
+    }
+
+    boolean validarCadastro(String acaoSocialId, String usuarioId){
+        Optional<Colaboracao> colaboracao = this.repository.findByAcaoSocialIdAndColaboradorId(acaoSocialId, usuarioId);
+
+        if(colaboracao.isPresent()) return false;
+
+        return true;
     }
 
     public Integer buscarNumeroDeInscricaoPorId(String inscricaoId){

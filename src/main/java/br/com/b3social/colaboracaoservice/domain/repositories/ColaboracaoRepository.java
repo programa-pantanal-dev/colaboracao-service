@@ -15,5 +15,6 @@ public interface ColaboracaoRepository extends JpaRepository<Colaboracao, String
     List<Colaboracao> findByAcaoSocialIdAndCoordenadorId(String acaoSocialId, String coordenadorId);
     List<Colaboracao> findByColaboradorId(String colabodadorId);
     List<Colaboracao> findByCoordenadorId(String coordenadorId);
+    Optional<Colaboracao> findByAcaoSocialIdAndColaboradorId(String id, String colaboradorId);
     Optional<Colaboracao> findById(String id);
 }

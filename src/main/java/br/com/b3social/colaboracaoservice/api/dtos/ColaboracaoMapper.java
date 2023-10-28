@@ -6,7 +6,6 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 
 import br.com.b3social.colaboracaoservice.domain.models.Colaboracao;
 
@@ -14,7 +13,6 @@ import br.com.b3social.colaboracaoservice.domain.models.Colaboracao;
 nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
 componentModel = "spring")
 public interface ColaboracaoMapper {
-    ColaboracaoMapper INSTANCE = Mappers.getMapper(ColaboracaoMapper.class);
     Colaboracao DtoToInscricao(CriarColaboracaoDTO criarInscricaoDTO);
     Colaboracao DtoToInscricao(AtualizarColaboracaoDTO atualizarInscricaoDTO);
     RetornarColaboracaoDTO InscricaoToDto(Colaboracao inscricao);
