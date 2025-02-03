@@ -1,3 +1,6 @@
+![Frame 2](https://github.com/user-attachments/assets/4ab107c2-bfd8-4645-a6ce-2111cb930945)
+
+
 # Microserviço de Colaboração
 
 Este microserviço é responsável pela gestão das colaborações dentro do sistema. Ele fornece endpoints para criação, edição, exclusão e consulta de colaborações, garantindo integração eficiente com os demais serviços do ecossistema.
